@@ -9,159 +9,261 @@
 // @grant       none
 // @homepageURL https://github.com/picodexter/youtube-subscriptions-bookmark-friendly-video-titles
 // @match       https://www.youtube.com/feed/subscriptions
+// @match       https://www.youtube.com/feed/subscriptions?*
 // @supportURL  https://github.com/picodexter/youtube-subscriptions-bookmark-friendly-video-titles/issues
 // ==/UserScript==
 
-VideoTitleRewriter = new function () {
-    var debug = false;
+(function() {
+    'use strict';
 
-    /**
-     * Run rewriter.
-     */
-    this.run = function () {
-        var feedContainer = getFeedContainer();
+    var VideoTitleRewriter = function () {
+        var debug = false;
 
-        if (!feedContainer) {
-            return;
-        }
+        var usingGridView = null;
+        var usingWebComponents = null;
 
-        debugMessage('Feed container: ', feedContainer);
+        /**
+         * Run rewriter.
+         */
+        this.run = function () {
+            var feedContainer = getFeedContainerElement();
 
-        var a = feedContainer.querySelectorAll('ytd-item-section-renderer');
-        var currentFeedItemElement, i;
-        var youtubeUser, videoDuration, videoTitle;
-        var sep;
-
-        for (i = 0; i < a.length; i++) {
-            currentFeedItemElement = a[i];
-
-            if (currentFeedItemElement.dataset.ytsbtpProcessed === '1') {
-                continue;
+            if (!feedContainer) {
+                return;
             }
 
-            debugMessage('Found unprocessed list entry.');
+            debugMessage('Feed container: ', feedContainer);
 
-            /*
-             * Video duration
-             */
-            videoDuration = '';
-            var videoDurationElement = currentFeedItemElement.querySelector('ytd-thumbnail-overlay-time-status-renderer .ytd-thumbnail-overlay-time-status-renderer');
-            if (!videoDurationElement) {
-                continue;
+            var feedItemElements = getFeedItemElements(feedContainer);
+
+            for (var i = 0; i < feedItemElements.length; i++) {
+                var currentFeedItemElement = feedItemElements[i];
+
+                if ('1' === currentFeedItemElement.dataset.ytsbtpProcessed) {
+                    continue;
+                }
+
+                debugMessage('Found unprocessed list entry.');
+
+                /*
+                 * Video duration
+                 */
+                var videoDurationElement = getVideoDurationElement(currentFeedItemElement);
+                if (!videoDurationElement) {
+                    continue;
+                }
+                var videoDuration = videoDurationElement.innerHTML.trim();
+                if (videoDuration.indexOf('<') > -1) {
+                    videoDuration = videoDuration.substr(0, videoDuration.indexOf('<'));
+                }
+
+                debugMessage('Video duration: ' + videoDuration);
+
+                /*
+                 * Channel name
+                 */
+                var channelNameElement = getChannelNameElement(currentFeedItemElement);
+                if (!channelNameElement) {
+                    continue;
+                }
+                var channelName = channelNameElement.innerHTML;
+
+                debugMessage('Channel name: ' + channelName);
+
+                /*
+                 * Video title
+                 */
+                var videoTitleElement = getVideoTitleElement(currentFeedItemElement);
+                if (!videoTitleElement) {
+                    continue;
+                }
+                var videoTitle = videoTitleElement.innerHTML.trim();
+
+                debugMessage('Video title: ' + videoTitle);
+
+                var separator = (videoDuration === '' ? ' | ' : ' [' + formatDuration(videoDuration) + '] ');
+
+                var newTitle = channelName + separator + videoTitle;
+                newTitle = newTitle.trim();
+
+                videoTitleElement.innerHTML = newTitle;
+                currentFeedItemElement.dataset.ytsbtpProcessed = '1';
+
+                debugMessage('List entry successfully processed.');
             }
-            videoDuration = videoDurationElement.innerHTML.trim();
-            if (videoDuration.indexOf('<') > -1) {
-                videoDuration = videoDuration.substr(0, videoDuration.indexOf('<'));
+        };
+
+        /**
+         * Register observer.
+         *
+         * Observes DOM changes in case content gets added via AJAX ("load more"). Triggers run().
+         */
+        this.registerObserver = function () {
+            var feedContainer = getFeedContainerElement();
+
+            if (!feedContainer) {
+                debugMessage('No feed container found for binding MutationObserver event.');
+                return;
             }
 
-            debugMessage('Video duration: ' + videoDuration);
+            //noinspection JSUnresolvedFunction,JSUnusedLocalSymbols
+            var observer = new MutationObserver(function(mutations) {
+                rewriter.run();
+            });
 
-            /*
-             * YouTube user
-             */
-            var youtubeUserElement = currentFeedItemElement.querySelector('ytd-video-meta-block .ytd-video-meta-block #byline > a');
-            if (!youtubeUserElement) {
-                continue;
+            //noinspection JSCheckFunctionSignatures
+            observer.observe(feedContainer, { childList: true });
+
+            debugMessage('Mutation observer bound to feed container.');
+        };
+
+        /**
+         * Output debug message.
+         *
+         * Only works if debug mode is enabled.
+         *
+         * @param {...*} arguments
+         */
+        var debugMessage = function () {
+            if (debug) {
+                console.info(arguments);
             }
-            youtubeUser = youtubeUserElement.innerHTML;
+        };
 
-            debugMessage('YouTube user: ' + youtubeUser);
+        /**
+         * Format duration.
+         *
+         * Prepends leading zeroes to single-digit units.
+         *
+         * @param {string} duration
+         *
+         * @returns {string}
+         */
+        var formatDuration = function (duration) {
+            var t = duration.split(/:/);
+            var r = [];
 
-            /*
-             * Video title
-             */
-            var videoTitleElement = currentFeedItemElement.querySelector('#meta h3 #video-title');
-            if (!videoTitleElement) {
-                continue;
+            for (var i = 0; i < t.length; i++) {
+                r.push(t[i].length < 2 ? '0' + t[i] : t[i]);
             }
-            videoTitle = videoTitleElement.innerHTML.trim();
 
-            debugMessage('Video title: ' + videoTitle);
+            return r.join(':');
+        };
 
-            sep = (videoDuration === '' ? ' | ' : ' [' + formatDuration(videoDuration) + '] ');
+        /**
+         * Get element containing the channel info.
+         *
+         * @param {Element} feedItemElement
+         *
+         * @returns {Element}
+         */
+        var getChannelNameElement = function (feedItemElement) {
+            if (isUsingWebComponents()) {
+                return feedItemElement.querySelector('#metadata #byline-container #byline > a');
+            } else {
+                return feedItemElement.querySelector('.yt-lockup-byline > a');
+            }
+        };
 
-            var newTitle = youtubeUser + sep + videoTitle;
-            newTitle = newTitle.trim();
+        /**
+         * Get the feed container element.
+         *
+         * @returns {Element}
+         */
+        var getFeedContainerElement = function () {
+            if (isUsingWebComponents()) {
+                return document.querySelector('.ytd-browse > #primary > #contents');
+            } else {
+                return document.querySelector('#browse-items-primary');
+            }
+        };
 
-            videoTitleElement.innerHTML = newTitle;
-            currentFeedItemElement.dataset.ytsbtpProcessed = '1';
+        /**
+         * Get feed item elements.
+         *
+         * @param {Element} feedContainer
+         *
+         * @returns {NodeList}
+         */
+        var getFeedItemElements = function (feedContainer) {
+            if (isUsingWebComponents()) {
+                if (isGridView()) {
+                    return feedContainer.querySelectorAll('#items > .ytd-grid-renderer');
+                } else {
+                    return feedContainer.querySelectorAll('#contents.ytd-item-section-renderer');
+                }
+            } else {
+                if (isGridView()) {
+                    return feedContainer.querySelectorAll('.shelf-content .yt-shelf-grid-item');
+                } else {
+                    return feedContainer.querySelectorAll('.feed-item-container .feed-item-dismissable');
+                }
+            }
+        };
 
-            debugMessage('List entry successfully processed.');
-        }
+        /**
+         * Get element containing the video duration.
+         *
+         * @param {Element} feedItemElement
+         *
+         * @returns {Element}
+         */
+        var getVideoDurationElement = function (feedItemElement) {
+            if (isUsingWebComponents()) {
+                return feedItemElement.querySelector('#thumbnail #overlays .ytd-thumbnail-overlay-time-status-renderer');
+            } else {
+                return feedItemElement.querySelector('.yt-thumb .video-time');
+            }
+        };
+
+        /**
+         * Get element containing the video title.
+         *
+         * @param {Element} feedItemElement
+         *
+         * @returns {Element}
+         */
+        var getVideoTitleElement = function (feedItemElement) {
+            if (isUsingWebComponents()) {
+                return feedItemElement.querySelector('#meta h3 #video-title');
+            } else {
+                return feedItemElement.querySelector('.yt-lockup-title > a');
+            }
+        };
+
+        /**
+         * Check if website is using grid view.
+         *
+         * @returns {boolean}
+         */
+        var isGridView = function () {
+            if (null === usingGridView) {
+                if (isUsingWebComponents()) {
+                    usingGridView = (null !== document.querySelector('#items.ytd-grid-renderer'));
+                } else {
+                    usingGridView = (null !== document.querySelector('.yt-shelf-grid-item'));
+                }
+            }
+
+            return usingGridView;
+        };
+
+        /**
+         * Check if website is using Web Components.
+         *
+         * @returns {boolean}
+         */
+        var isUsingWebComponents = function () {
+            if (null === usingWebComponents) {
+                usingWebComponents = (null !== document.querySelector('template'));
+            }
+
+            return usingWebComponents;
+        };
     };
 
-    /**
-     * Register observer.
-     *
-     * Observes DOM changes in case content gets added via AJAX ("load more"). Triggers run().
-     */
-    this.registerObserver = function () {
-        var feedContainer = getFeedContainer();
+    var rewriter = new VideoTitleRewriter();
 
-        if (!feedContainer) {
-            debugMessage('No feed container found for binding MutationObserver event.');
-            return;
-        }
-
-        //noinspection JSUnresolvedFunction,JSUnusedLocalSymbols
-        var observer = new MutationObserver(function(mutations) {
-            VideoTitleRewriter.run();
-        });
-
-        //noinspection JSCheckFunctionSignatures
-        observer.observe(feedContainer, { childList: true });
-
-        debugMessage('Mutation observer bound to feed container.');
-    };
-
-    /**
-     * Get the feed container.
-     *
-     * @returns {Element}
-     */
-    var getFeedContainer = function () {
-        var feedContainer = document.querySelector('.ytd-browse > #primary > #contents');
-
-        if (!feedContainer) {
-            debugMessage('Could not find feed container.');
-        }
-
-        return (feedContainer ? feedContainer : false);
-    };
-
-    /**
-     * Format duration.
-     *
-     * Prepends leading zeroes to single-digit units.
-     *
-     * @param {string} duration
-     *
-     * @returns {string}
-     */
-    var formatDuration = function (duration) {
-        var t = duration.split(/:/);
-        var r = [];
-
-        for (var i = 0; i < t.length; i++) {
-            r.push(t[i].length < 2 ? '0' + t[i] : t[i]);
-        }
-
-        return r.join(':');
-    };
-
-    /**
-     * Output debug message.
-     *
-     * Only works if debug mode is enabled.
-     *
-     * @param {...*} arguments
-     */
-    var debugMessage = function () {
-        if (debug) {
-            console.info(arguments);
-        }
-    }
-};
-
-VideoTitleRewriter.registerObserver();
-VideoTitleRewriter.run();
+    rewriter.registerObserver();
+    rewriter.run();
+})();
