@@ -14,6 +14,11 @@ The new video title enables you to immediately identify channel, duration and ti
 the video to your favorites / bookmark collection by dragging & dropping it via its video title, no editing or other
 adjustments after the fact required.
 
+## Features
+
+*   Support for grid and list views
+*   Support for YouTube's Web Components layout
+
 ## License
 
 This userscript is released under the [GPLv3 license](LICENSE).
