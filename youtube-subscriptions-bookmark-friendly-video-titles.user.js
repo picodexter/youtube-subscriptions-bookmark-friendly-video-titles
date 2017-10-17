@@ -43,7 +43,7 @@
                     continue;
                 }
 
-                debugMessage('Found unprocessed list entry.');
+                debugMessage('Found unprocessed list entry.', currentFeedItemElement);
 
                 /*
                  * Video duration
@@ -57,7 +57,7 @@
                     videoDuration = videoDuration.substr(0, videoDuration.indexOf('<'));
                 }
 
-                debugMessage('Video duration: ' + videoDuration);
+                debugMessage('Video duration: ' + videoDuration, currentFeedItemElement);
 
                 /*
                  * Channel name
@@ -68,7 +68,7 @@
                 }
                 var channelName = channelNameElement.innerHTML;
 
-                debugMessage('Channel name: ' + channelName);
+                debugMessage('Channel name: ' + channelName, currentFeedItemElement);
 
                 /*
                  * Video title
@@ -79,7 +79,7 @@
                 }
                 var videoTitle = videoTitleElement.innerHTML.trim();
 
-                debugMessage('Video title: ' + videoTitle);
+                debugMessage('Video title: ' + videoTitle, currentFeedItemElement);
 
                 var separator = (videoDuration === '' ? ' | ' : ' [' + formatDuration(videoDuration) + '] ');
 
