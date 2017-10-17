@@ -50,6 +50,7 @@
                  */
                 var videoDurationElement = getVideoDurationElement(currentFeedItemElement);
                 if (!videoDurationElement) {
+                    debugMessage('SKIP: Could not get video duration.', currentFeedItemElement);
                     continue;
                 }
                 var videoDuration = videoDurationElement.innerHTML.trim();
@@ -64,6 +65,7 @@
                  */
                 var channelNameElement = getChannelNameElement(currentFeedItemElement);
                 if (!channelNameElement) {
+                    debugMessage('SKIP: Could not get channel name.', currentFeedItemElement);
                     continue;
                 }
                 var channelName = channelNameElement.innerHTML;
@@ -75,6 +77,7 @@
                  */
                 var videoTitleElement = getVideoTitleElement(currentFeedItemElement);
                 if (!videoTitleElement) {
+                    debugMessage('SKIP: Could not get video title.', currentFeedItemElement);
                     continue;
                 }
                 var videoTitle = videoTitleElement.innerHTML.trim();
