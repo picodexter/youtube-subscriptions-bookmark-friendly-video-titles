@@ -100,6 +100,8 @@
 
                 debugMessage('List entry successfully processed.');
             }
+
+            debugMessage('End of running video title rewriter.');
         };
 
         /**
