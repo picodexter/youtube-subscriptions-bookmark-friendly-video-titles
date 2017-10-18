@@ -123,7 +123,15 @@
             });
 
             //noinspection JSCheckFunctionSignatures
-            observer.observe(feedContainer, { childList: true });
+            observer.observe(
+                feedContainer,
+                {
+                    childList: true,
+                    attributes: true,
+                    characterData: true,
+                    subtree: true
+                }
+            );
 
             debugMessage('Mutation observer bound to feed container.');
         };
