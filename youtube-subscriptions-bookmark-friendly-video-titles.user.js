@@ -26,6 +26,12 @@
          * Run rewriter.
          */
         this.run = function () {
+            debugMessage('Running video title rewriter.');
+
+            debugMessage('STATUS: Using Web Components:', isUsingWebComponents());
+
+            debugMessage('STATUS: Grid view detected:', isGridView());
+
             var feedContainer = getFeedContainerElement();
 
             if (!feedContainer) {
