@@ -28,6 +28,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 *   (empty)
 
+## 1.0.2 (2017-11-06)
+
+### Fixed
+
+*   Fix license name in @license tag to use SPDX code. This is required to retain support with OpenUserJS.
+
 ## 1.0.1 (2017-10-19)
 
 ### Added
