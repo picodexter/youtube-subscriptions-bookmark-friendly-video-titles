@@ -5,7 +5,7 @@
 // @version     1.0.2
 // @author      picodexter (https://picodexter.io/)
 // @copyright   2017+, picodexter (https://picodexter.io/)
-// @license     GPL-3.0+; http://www.gnu.org/copyleft/gpl.html
+// @license     GPL-3.0-or-later; https://www.gnu.org/licenses/gpl-3.0-standalone.html
 // @grant       none
 // @homepageURL https://github.com/picodexter/youtube-subscriptions-bookmark-friendly-video-titles
 // @match       https://www.youtube.com/feed/subscriptions

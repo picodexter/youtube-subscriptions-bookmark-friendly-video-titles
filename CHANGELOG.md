@@ -23,6 +23,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 *   Fixed container path for Web Components = true, grid view = false.
+*   Fixed and updated license information.
 
 ### Security
 
