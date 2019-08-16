@@ -22,7 +22,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
-*   (empty)
+*   Fixed container path for Web Components = true, grid view = false.
 
 ### Security
 

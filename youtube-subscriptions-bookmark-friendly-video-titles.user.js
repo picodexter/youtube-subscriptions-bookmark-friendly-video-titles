@@ -191,7 +191,7 @@
          */
         var getFeedContainerElement = function () {
             if (isUsingWebComponents()) {
-                return document.querySelector('.ytd-browse > #primary > #contents');
+                return document.querySelector('.ytd-browse > #primary > ytd-section-list-renderer > #contents');
             } else {
                 return document.querySelector('#browse-items-primary');
             }
