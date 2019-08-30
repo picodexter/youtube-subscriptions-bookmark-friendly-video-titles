@@ -10,10 +10,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
-*   Formatted code according to coding standards.
-*   Improved internal element selector management.
-*   Improved performance considerably by triggering rewrites through MutationObserver only when the video duration
-    element was updated and only once per observation call.
+*   (empty)
 
 ### Deprecated
 
@@ -25,12 +22,25 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
-*   Fixed channel name detection for Web Components = true, grid view = false.
-*   Improved debug message logging.
+*   (empty)
 
 ### Security
 
 *   (empty)
+
+## 1.0.4 (2019-08-31)
+
+### Changed
+
+*   Formatted code according to coding standards.
+*   Improved internal element selector management.
+*   Improved performance considerably by triggering rewrites through MutationObserver only when the video duration
+    element was updated and only once per observation call.
+
+### Fixed
+
+*   Fixed channel name detection for Web Components = true, grid view = false.
+*   Improved debug message logging.
 
 ## 1.0.3 (2019-08-16)
 
