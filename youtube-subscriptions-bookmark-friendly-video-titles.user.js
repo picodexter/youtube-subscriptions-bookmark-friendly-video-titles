@@ -56,7 +56,7 @@
                  */
                 var videoDurationElement = getVideoDurationElement(currentFeedItemElement);
                 if (!videoDurationElement) {
-                    debugMessage('SKIP: Could not get video duration.', currentFeedItemElement);
+                    debugMessage('SKIP: Could not get video duration.');
                     continue;
                 }
                 var videoDuration = videoDurationElement.innerHTML.trim();
@@ -64,31 +64,31 @@
                     videoDuration = videoDuration.substr(0, videoDuration.indexOf('<'));
                 }
 
-                debugMessage('Video duration: ' + videoDuration, currentFeedItemElement);
+                debugMessage('Video duration: ' + videoDuration);
 
                 /*
                  * Channel name
                  */
                 var channelNameElement = getChannelNameElement(currentFeedItemElement);
                 if (!channelNameElement) {
-                    debugMessage('SKIP: Could not get channel name.', currentFeedItemElement);
+                    debugMessage('SKIP: Could not get channel name.');
                     continue;
                 }
                 var channelName = channelNameElement.innerHTML;
 
-                debugMessage('Channel name: ' + channelName, currentFeedItemElement);
+                debugMessage('Channel name: ' + channelName);
 
                 /*
                  * Video title
                  */
                 var videoTitleElement = getVideoTitleElement(currentFeedItemElement);
                 if (!videoTitleElement) {
-                    debugMessage('SKIP: Could not get video title.', currentFeedItemElement);
+                    debugMessage('SKIP: Could not get video title.');
                     continue;
                 }
                 var videoTitle = videoTitleElement.innerHTML.trim();
 
-                debugMessage('Video title: ' + videoTitle, currentFeedItemElement);
+                debugMessage('Video title: ' + videoTitle);
 
                 var separator = (videoDuration === '' ? ' | ' : ' [' + formatDuration(videoDuration) + '] ');
 
