@@ -142,12 +142,30 @@
                 return;
             }
 
-            //noinspection JSUnresolvedFunction,JSUnusedLocalSymbols
-            const observer = new MutationObserver(function (mutations) {
-                rewriter.run();
+            const observer = new MutationObserver(function (mutationRecords) {
+                let runRewriter = false;
+
+                for (let i = 0; i < mutationRecords.length; i++) {
+                    const mutationRecord = mutationRecords[i];
+                    const target = mutationRecord.target;
+
+                    const isOrContainsVideoDurationElement = (target.matches(videoDurationElementSelector)
+                        || ((target.childNodes.length > 0) && (target.childNodes[0].matches(videoDurationElementSelector))));
+
+                    if (isOrContainsVideoDurationElement
+                        && (mutationRecord.type === 'childList')
+                        && (mutationRecord.addedNodes.length > 0)
+                    ) {
+                        runRewriter = true;
+                        break;
+                    }
+                }
+
+                if (runRewriter) {
+                    rewriter.run();
+                }
             });
 
-            //noinspection JSCheckFunctionSignatures
             observer.observe(
                 feedContainer,
                 {
@@ -326,6 +344,11 @@
 
             return usingWebComponents;
         };
+
+        /**
+         * Selector cache.
+         */
+        const videoDurationElementSelector = getElementSelector('videoDurationElement');
     };
 
     const rewriter = new VideoTitleRewriter();

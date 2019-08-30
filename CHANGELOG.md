@@ -12,6 +12,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 *   Formatted code according to coding standards.
 *   Improved internal element selector management.
+*   Improved performance considerably by triggering rewrites through MutationObserver only when the video duration
+    element was updated and only once per observation call.
 
 ### Deprecated
 
