@@ -170,7 +170,7 @@
         };
 
         /**
-         * Get element containing the channel info.
+         * Get element containing the channel name.
          *
          * @param {Element} feedItemElement
          *
@@ -178,7 +178,7 @@
          */
         var getChannelNameElement = function (feedItemElement) {
             if (isUsingWebComponents()) {
-                return feedItemElement.querySelector('#metadata #byline-container #byline > a');
+                return feedItemElement.querySelector('#metadata #byline-container #channel-name #text.ytd-channel-name > a');
             } else {
                 return feedItemElement.querySelector('.yt-lockup-byline > a');
             }

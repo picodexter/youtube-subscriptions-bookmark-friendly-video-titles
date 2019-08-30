@@ -22,6 +22,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+*   Fixed channel name detection for Web Components = true, grid view = false.
 *   Improved debug message logging.
 
 ### Security
