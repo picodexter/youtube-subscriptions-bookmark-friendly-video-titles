@@ -2,7 +2,7 @@
 // @name        YouTube Subscriptions Bookmark-Friendly Video Titles
 // @namespace   https://github.com/picodexter/youtube-subscriptions-bookmark-friendly-video-titles
 // @description Prepends the channel name and the video duration to the video titles in YouTube's subscription feed.
-// @version     1.0.3
+// @version     1.0.4
 // @author      picodexter (https://picodexter.io/)
 // @copyright   2017+, picodexter (https://picodexter.io/)
 // @license     GPL-3.0-or-later; https://www.gnu.org/licenses/gpl-3.0-standalone.html
