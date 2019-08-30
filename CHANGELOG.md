@@ -10,7 +10,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
-*   (empty)
+*   Improved internal element selector management.
 
 ### Deprecated
 

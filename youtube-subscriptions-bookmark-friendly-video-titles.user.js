@@ -22,6 +22,31 @@
         var usingGridView = null;
         var usingWebComponents = null;
 
+        var selectors = {
+            'channelNameElement': {
+                'webComponents0': '.yt-lockup-byline > a',
+                'webComponents1': '#metadata #byline-container #channel-name #text.ytd-channel-name > a',
+            },
+            'feedContainerElement': {
+                'webComponents0': '#browse-items-primary',
+                'webComponents1': '.ytd-browse > #primary > ytd-section-list-renderer > #contents',
+            },
+            'feedItemElements': {
+                'webComponents0_gridView0': '.feed-item-container .feed-item-dismissable',
+                'webComponents0_gridView1': '.shelf-content .yt-shelf-grid-item',
+                'webComponents1_gridView0': '#contents.ytd-item-section-renderer',
+                'webComponents1_gridView1': '#items > .ytd-grid-renderer',
+            },
+            'videoDurationElement': {
+                'webComponents0': '.yt-thumb .video-time',
+                'webComponents1': '#thumbnail #overlays .ytd-thumbnail-overlay-time-status-renderer',
+            },
+            'videoTitleElement': {
+                'webComponents0': '.yt-lockup-title > a',
+                'webComponents1': '#meta h3 #video-title',
+            },
+        };
+
         /**
          * Run rewriter.
          */
@@ -177,11 +202,57 @@
          * @returns {Element}
          */
         var getChannelNameElement = function (feedItemElement) {
-            if (isUsingWebComponents()) {
-                return feedItemElement.querySelector('#metadata #byline-container #channel-name #text.ytd-channel-name > a');
-            } else {
-                return feedItemElement.querySelector('.yt-lockup-byline > a');
+            return getElementByName('channelNameElement', feedItemElement);
+        };
+
+        /**
+         * Get element by name.
+         *
+         * @param {string}     elementName
+         * @param {ParentNode} parentNode
+         *
+         * @returns {Element}
+         */
+        var getElementByName = function (elementName, parentNode) {
+            return parentNode.querySelector(getElementSelector(elementName));
+        };
+
+        /**
+         * Get elements by name.
+         *
+         * @param {string}     elementName
+         * @param {ParentNode} parentNode
+         *
+         * @returns {NodeList}
+         */
+        var getElementsByName = function (elementName, parentNode) {
+            return parentNode.querySelectorAll(getElementSelector(elementName));
+        };
+
+        /**
+         * Get element selector.
+         *
+         * @param {string} elementName
+         *
+         * @returns {string}
+         */
+        var getElementSelector = function (elementName) {
+            var modeKeyWebComponents = 'webComponents' + (isUsingWebComponents() ? '1' : '0');
+            var modeKeyFull = modeKeyWebComponents + '_gridView' + (isGridView() ? '1' : '0');
+            var selector = null;
+
+            if (typeof selectors[elementName] !== 'undefined') {
+                var modeKey = (typeof selectors[elementName][modeKeyFull] !== 'undefined'
+                    ? modeKeyFull
+                    : modeKeyWebComponents);
+                selector = (typeof selectors[elementName][modeKey] !== 'undefined'
+                    ? selectors[elementName][modeKey]
+                    : null);
             }
+
+            debugMessage('Selector for element name ' + elementName + ':', selector);
+
+            return selector;
         };
 
         /**
@@ -190,11 +261,7 @@
          * @returns {Element}
          */
         var getFeedContainerElement = function () {
-            if (isUsingWebComponents()) {
-                return document.querySelector('.ytd-browse > #primary > ytd-section-list-renderer > #contents');
-            } else {
-                return document.querySelector('#browse-items-primary');
-            }
+            return getElementByName('feedContainerElement', document);
         };
 
         /**
@@ -205,19 +272,7 @@
          * @returns {NodeList}
          */
         var getFeedItemElements = function (feedContainer) {
-            if (isUsingWebComponents()) {
-                if (isGridView()) {
-                    return feedContainer.querySelectorAll('#items > .ytd-grid-renderer');
-                } else {
-                    return feedContainer.querySelectorAll('#contents.ytd-item-section-renderer');
-                }
-            } else {
-                if (isGridView()) {
-                    return feedContainer.querySelectorAll('.shelf-content .yt-shelf-grid-item');
-                } else {
-                    return feedContainer.querySelectorAll('.feed-item-container .feed-item-dismissable');
-                }
-            }
+            return getElementsByName('feedItemElements', feedContainer);
         };
 
         /**
@@ -228,11 +283,7 @@
          * @returns {Element}
          */
         var getVideoDurationElement = function (feedItemElement) {
-            if (isUsingWebComponents()) {
-                return feedItemElement.querySelector('#thumbnail #overlays .ytd-thumbnail-overlay-time-status-renderer');
-            } else {
-                return feedItemElement.querySelector('.yt-thumb .video-time');
-            }
+            return getElementByName('videoDurationElement', feedItemElement);
         };
 
         /**
@@ -243,11 +294,7 @@
          * @returns {Element}
          */
         var getVideoTitleElement = function (feedItemElement) {
-            if (isUsingWebComponents()) {
-                return feedItemElement.querySelector('#meta h3 #video-title');
-            } else {
-                return feedItemElement.querySelector('.yt-lockup-title > a');
-            }
+            return getElementByName('videoTitleElement', feedItemElement);
         };
 
         /**
