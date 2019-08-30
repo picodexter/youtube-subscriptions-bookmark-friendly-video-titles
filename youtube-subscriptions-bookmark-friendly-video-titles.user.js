@@ -13,16 +13,16 @@
 // @supportURL  https://github.com/picodexter/youtube-subscriptions-bookmark-friendly-video-titles/issues
 // ==/UserScript==
 
-(function() {
+(function () {
     'use strict';
 
-    var VideoTitleRewriter = function () {
-        var debug = false;
+    const VideoTitleRewriter = function () {
+        const debug = false;
 
-        var usingGridView = null;
-        var usingWebComponents = null;
+        let usingGridView = null;
+        let usingWebComponents = null;
 
-        var selectors = {
+        const selectors = {
             'channelNameElement': {
                 'webComponents0': '.yt-lockup-byline > a',
                 'webComponents1': '#metadata #byline-container #channel-name #text.ytd-channel-name > a',
@@ -57,7 +57,7 @@
 
             debugMessage('STATUS: Grid view detected:', isGridView());
 
-            var feedContainer = getFeedContainerElement();
+            const feedContainer = getFeedContainerElement();
 
             if (!feedContainer) {
                 return;
@@ -65,10 +65,10 @@
 
             debugMessage('Feed container: ', feedContainer);
 
-            var feedItemElements = getFeedItemElements(feedContainer);
+            const feedItemElements = getFeedItemElements(feedContainer);
 
-            for (var i = 0; i < feedItemElements.length; i++) {
-                var currentFeedItemElement = feedItemElements[i];
+            for (let i = 0; i < feedItemElements.length; i++) {
+                const currentFeedItemElement = feedItemElements[i];
 
                 if ('1' === currentFeedItemElement.dataset.ytsbtpProcessed) {
                     continue;
@@ -79,12 +79,12 @@
                 /*
                  * Video duration
                  */
-                var videoDurationElement = getVideoDurationElement(currentFeedItemElement);
+                const videoDurationElement = getVideoDurationElement(currentFeedItemElement);
                 if (!videoDurationElement) {
                     debugMessage('SKIP: Could not get video duration.');
                     continue;
                 }
-                var videoDuration = videoDurationElement.innerHTML.trim();
+                let videoDuration = videoDurationElement.innerHTML.trim();
                 if (videoDuration.indexOf('<') > -1) {
                     videoDuration = videoDuration.substr(0, videoDuration.indexOf('<'));
                 }
@@ -94,30 +94,30 @@
                 /*
                  * Channel name
                  */
-                var channelNameElement = getChannelNameElement(currentFeedItemElement);
+                const channelNameElement = getChannelNameElement(currentFeedItemElement);
                 if (!channelNameElement) {
                     debugMessage('SKIP: Could not get channel name.');
                     continue;
                 }
-                var channelName = channelNameElement.innerHTML;
+                let channelName = channelNameElement.innerHTML;
 
                 debugMessage('Channel name: ' + channelName);
 
                 /*
                  * Video title
                  */
-                var videoTitleElement = getVideoTitleElement(currentFeedItemElement);
+                const videoTitleElement = getVideoTitleElement(currentFeedItemElement);
                 if (!videoTitleElement) {
                     debugMessage('SKIP: Could not get video title.');
                     continue;
                 }
-                var videoTitle = videoTitleElement.innerHTML.trim();
+                let videoTitle = videoTitleElement.innerHTML.trim();
 
                 debugMessage('Video title: ' + videoTitle);
 
-                var separator = (videoDuration === '' ? ' | ' : ' [' + formatDuration(videoDuration) + '] ');
+                let separator = (videoDuration === '' ? ' | ' : ' [' + formatDuration(videoDuration) + '] ');
 
-                var newTitle = channelName + separator + videoTitle;
+                let newTitle = channelName + separator + videoTitle;
                 newTitle = newTitle.trim();
 
                 videoTitleElement.innerHTML = newTitle;
@@ -135,7 +135,7 @@
          * Observes DOM changes in case content gets added via AJAX ("load more"). Triggers run().
          */
         this.registerObserver = function () {
-            var feedContainer = getFeedContainerElement();
+            const feedContainer = getFeedContainerElement();
 
             if (!feedContainer) {
                 debugMessage('No feed container found for binding MutationObserver event.');
@@ -143,7 +143,7 @@
             }
 
             //noinspection JSUnresolvedFunction,JSUnusedLocalSymbols
-            var observer = new MutationObserver(function(mutations) {
+            const observer = new MutationObserver(function (mutations) {
                 rewriter.run();
             });
 
@@ -168,7 +168,7 @@
          *
          * @param {...*} arguments
          */
-        var debugMessage = function () {
+        const debugMessage = function () {
             if (debug) {
                 console.info(...arguments);
             }
@@ -183,11 +183,11 @@
          *
          * @returns {string}
          */
-        var formatDuration = function (duration) {
-            var t = duration.split(/:/);
-            var r = [];
+        const formatDuration = function (duration) {
+            let t = duration.split(/:/);
+            let r = [];
 
-            for (var i = 0; i < t.length; i++) {
+            for (let i = 0; i < t.length; i++) {
                 r.push(t[i].length < 2 ? '0' + t[i] : t[i]);
             }
 
@@ -201,7 +201,7 @@
          *
          * @returns {Element}
          */
-        var getChannelNameElement = function (feedItemElement) {
+        const getChannelNameElement = function (feedItemElement) {
             return getElementByName('channelNameElement', feedItemElement);
         };
 
@@ -213,7 +213,7 @@
          *
          * @returns {Element}
          */
-        var getElementByName = function (elementName, parentNode) {
+        const getElementByName = function (elementName, parentNode) {
             return parentNode.querySelector(getElementSelector(elementName));
         };
 
@@ -225,7 +225,7 @@
          *
          * @returns {NodeList}
          */
-        var getElementsByName = function (elementName, parentNode) {
+        const getElementsByName = function (elementName, parentNode) {
             return parentNode.querySelectorAll(getElementSelector(elementName));
         };
 
@@ -234,15 +234,15 @@
          *
          * @param {string} elementName
          *
-         * @returns {string}
+         * @returns {string|null}
          */
-        var getElementSelector = function (elementName) {
-            var modeKeyWebComponents = 'webComponents' + (isUsingWebComponents() ? '1' : '0');
-            var modeKeyFull = modeKeyWebComponents + '_gridView' + (isGridView() ? '1' : '0');
-            var selector = null;
+        const getElementSelector = function (elementName) {
+            const modeKeyWebComponents = 'webComponents' + (isUsingWebComponents() ? '1' : '0');
+            const modeKeyFull = modeKeyWebComponents + '_gridView' + (isGridView() ? '1' : '0');
+            let selector = null;
 
             if (typeof selectors[elementName] !== 'undefined') {
-                var modeKey = (typeof selectors[elementName][modeKeyFull] !== 'undefined'
+                let modeKey = (typeof selectors[elementName][modeKeyFull] !== 'undefined'
                     ? modeKeyFull
                     : modeKeyWebComponents);
                 selector = (typeof selectors[elementName][modeKey] !== 'undefined'
@@ -260,7 +260,7 @@
          *
          * @returns {Element}
          */
-        var getFeedContainerElement = function () {
+        const getFeedContainerElement = function () {
             return getElementByName('feedContainerElement', document);
         };
 
@@ -269,9 +269,9 @@
          *
          * @param {Element} feedContainer
          *
-         * @returns {NodeList}
+         * @returns {Element[]|NodeList}
          */
-        var getFeedItemElements = function (feedContainer) {
+        const getFeedItemElements = function (feedContainer) {
             return getElementsByName('feedItemElements', feedContainer);
         };
 
@@ -282,7 +282,7 @@
          *
          * @returns {Element}
          */
-        var getVideoDurationElement = function (feedItemElement) {
+        const getVideoDurationElement = function (feedItemElement) {
             return getElementByName('videoDurationElement', feedItemElement);
         };
 
@@ -293,7 +293,7 @@
          *
          * @returns {Element}
          */
-        var getVideoTitleElement = function (feedItemElement) {
+        const getVideoTitleElement = function (feedItemElement) {
             return getElementByName('videoTitleElement', feedItemElement);
         };
 
@@ -302,7 +302,7 @@
          *
          * @returns {boolean}
          */
-        var isGridView = function () {
+        const isGridView = function () {
             if (null === usingGridView) {
                 if (isUsingWebComponents()) {
                     usingGridView = (null !== document.querySelector('#items.ytd-grid-renderer'));
@@ -319,7 +319,7 @@
          *
          * @returns {boolean}
          */
-        var isUsingWebComponents = function () {
+        const isUsingWebComponents = function () {
             if (null === usingWebComponents) {
                 usingWebComponents = (null !== document.querySelector('template'));
             }
@@ -328,7 +328,7 @@
         };
     };
 
-    var rewriter = new VideoTitleRewriter();
+    const rewriter = new VideoTitleRewriter();
 
     rewriter.registerObserver();
     rewriter.run();
