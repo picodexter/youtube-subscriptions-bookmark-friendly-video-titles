@@ -145,7 +145,7 @@
          */
         var debugMessage = function () {
             if (debug) {
-                console.info(arguments);
+                console.info(...arguments);
             }
         };
 
