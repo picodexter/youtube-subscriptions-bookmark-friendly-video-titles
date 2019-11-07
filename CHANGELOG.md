@@ -22,12 +22,18 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
-*   Fixed and improved rewrite trigger.
-*   Fixed video duration element path for Web Components = true.
+*   (empty)
 
 ### Security
 
 *   (empty)
+
+## 1.0.5 (2019-11-07)
+
+### Fixed
+
+*   Fixed and improved rewrite trigger.
+*   Fixed video duration element path for Web Components = true.
 
 ## 1.0.4 (2019-08-31)
 
