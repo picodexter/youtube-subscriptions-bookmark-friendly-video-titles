@@ -22,6 +22,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+*   Fixed and improved rewrite trigger.
 *   Fixed video duration element path for Web Components = true.
 
 ### Security

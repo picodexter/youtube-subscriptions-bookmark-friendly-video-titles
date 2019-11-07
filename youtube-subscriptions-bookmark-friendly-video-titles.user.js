@@ -147,21 +147,38 @@
 
                 for (let i = 0; i < mutationRecords.length; i++) {
                     const mutationRecord = mutationRecords[i];
-                    const target = mutationRecord.target;
 
-                    const isOrContainsVideoDurationElement = (target.matches(videoDurationElementSelector)
-                        || ((target.childNodes.length > 0) && (target.childNodes[0].matches(videoDurationElementSelector))));
-
-                    if (isOrContainsVideoDurationElement
-                        && (mutationRecord.type === 'childList')
-                        && (mutationRecord.addedNodes.length > 0)
-                    ) {
-                        runRewriter = true;
-                        break;
+                    if ((mutationRecord.type !== 'childList') || (mutationRecord.addedNodes.length === 0)) {
+                        continue;
                     }
+
+                    const addedNodes = mutationRecord.addedNodes;
+
+                    let videoDurationElementFound = false;
+
+                    for (let j = 0; j < addedNodes.length; j++) {
+                        const addedNode = addedNodes[j];
+
+                        if (addedNode.matches(videoDurationElementSelector)
+                            || (addedNode.querySelector(videoDurationElementSelector) !== null)
+                        ) {
+                            videoDurationElementFound = true;
+                            break;
+                        }
+                    }
+
+                    if (!videoDurationElementFound) {
+                        continue;
+                    }
+
+                    runRewriter = true;
+                    break;
                 }
 
                 if (runRewriter) {
+                    rewriteCounts++;
+                    debugMessage('Running rewriter, call #', rewriteCounts);
+
                     rewriter.run();
                 }
             });
@@ -344,6 +361,11 @@
 
             return usingWebComponents;
         };
+
+        /**
+         * Rewrite counts.
+         */
+        let rewriteCounts = 0;
 
         /**
          * Selector cache.
