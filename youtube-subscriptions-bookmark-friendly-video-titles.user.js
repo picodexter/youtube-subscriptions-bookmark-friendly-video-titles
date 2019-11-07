@@ -39,7 +39,7 @@
             },
             'videoDurationElement': {
                 'webComponents0': '.yt-thumb .video-time',
-                'webComponents1': '#thumbnail #overlays .ytd-thumbnail-overlay-time-status-renderer',
+                'webComponents1': '#thumbnail #overlays span.ytd-thumbnail-overlay-time-status-renderer',
             },
             'videoTitleElement': {
                 'webComponents0': '.yt-lockup-title > a',

@@ -22,7 +22,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
-*   (empty)
+*   Fixed video duration element path for Web Components = true.
 
 ### Security
 
