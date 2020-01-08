@@ -22,11 +22,17 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
-*   Fixed detection of video title.
+*   (empty)
 
 ### Security
 
 *   (empty)
+
+## 1.0.6 (2020-01-08)
+
+### Fixed
+
+*   Fixed detection of video title.
 
 ## 1.0.5 (2019-11-07)
 
