@@ -22,7 +22,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
-*   (empty)
+*   Fixed whitespace appearing at beginning of bookmark title when dragging and dropping in Firefox.
 
 ### Security
 

@@ -43,7 +43,7 @@
             },
             'videoTitleElement': {
                 'webComponents0': '.yt-lockup-title > a',
-                'webComponents1': '#meta h3 #video-title > .ytd-video-renderer',
+                'webComponents1': '#meta h3 a#video-title',
             },
         };
 
@@ -111,7 +111,7 @@
                     debugMessage('SKIP: Could not get video title.');
                     continue;
                 }
-                let videoTitle = videoTitleElement.innerHTML.trim();
+                let videoTitle = videoTitleElement.innerText.trim();
 
                 debugMessage('Video title: ' + videoTitle);
 
