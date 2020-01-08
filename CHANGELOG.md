@@ -22,11 +22,17 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
-*   Fixed whitespace appearing at beginning of bookmark title when dragging and dropping in Firefox.
+*   (empty)
 
 ### Security
 
 *   (empty)
+
+## 1.0.7 (2020-01-08)
+
+### Fixed
+
+*   Fixed whitespace appearing at beginning of bookmark title when dragging and dropping in Firefox.
 
 ## 1.0.6 (2020-01-08)
 
