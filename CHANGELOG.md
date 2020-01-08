@@ -22,7 +22,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
-*   (empty)
+*   Fixed detection of video title.
 
 ### Security
 

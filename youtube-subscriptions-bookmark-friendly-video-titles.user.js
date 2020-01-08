@@ -43,7 +43,7 @@
             },
             'videoTitleElement': {
                 'webComponents0': '.yt-lockup-title > a',
-                'webComponents1': '#meta h3 #video-title',
+                'webComponents1': '#meta h3 #video-title > .ytd-video-renderer',
             },
         };
 
